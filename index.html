@@ -49,7 +49,12 @@
             border-bottom: 1px solid #333;
         }
 
-        /* Logo Styling */
+        .brand-section {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
         .logo-link {
             display: flex;
             align-items: center;
@@ -58,14 +63,34 @@
         }
 
         .logo-link:hover {
-            opacity: 0.8;
-            transform: scale(1.02);
+            transform: scale(1.05);
         }
 
         .nav-logo-img {
-            height: 45px; /* Adjust this to make your logo bigger or smaller */
+            height: 45px;
             width: auto;
             display: block;
+        }
+
+        /* Social Icons */
+        .social-links {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            border-left: 1px solid #333;
+            padding-left: 20px;
+        }
+
+        .social-icon {
+            height: 24px;
+            width: auto;
+            transition: 0.3s;
+            opacity: 0.7;
+        }
+
+        .social-icon:hover {
+            opacity: 1;
+            transform: translateY(-2px);
         }
 
         .nav-links {
@@ -125,7 +150,6 @@
             margin-bottom: 40px;
         }
 
-        /* IP Container */
         .join-options {
             display: flex;
             gap: 20px;
@@ -144,7 +168,6 @@
             transition: 0.3s ease;
             text-align: left;
             min-width: 280px;
-            position: relative;
         }
 
         .ip-box:hover {
@@ -198,15 +221,27 @@
             .hero h1 { font-size: 3rem; }
             .nav-links { display: none; }
             .join-options { flex-direction: column; align-items: center; }
+            .social-links { border-left: none; padding-left: 10px; }
         }
     </style>
 </head>
 <body>
 
     <nav>
-        <a href="/" class="logo-link">
-            <img src="logo.png" alt="DonnerSMP Logo" class="nav-logo-img">
-        </a>
+        <div class="brand-section">
+            <a href="/" class="logo-link">
+                <img src="logo.png" alt="DonnerSMP Logo" class="nav-logo-img">
+            </a>
+
+            <div class="social-links">
+                <a href="https://www.youtube.com/@donnerbone" target="_blank">
+                    <img src="youtube.png" alt="YouTube" class="social-icon">
+                </a>
+                <a href="https://discord.gg/bJ3BghxF" target="_blank">
+                    <img src="discord.png" alt="Discord" class="social-icon">
+                </a>
+            </div>
+        </div>
 
         <div class="nav-links">
             <a href="#">Home</a>
@@ -239,7 +274,6 @@
     <script>
         function copyText(text, element) {
             navigator.clipboard.writeText(text);
-            
             const originalContent = element.innerHTML;
             const isBedrock = element.classList.contains('bedrock');
             const feedbackColor = isBedrock ? '#00ffcc' : '#ff4757';
