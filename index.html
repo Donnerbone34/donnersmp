@@ -8,6 +8,7 @@
     <style>
         :root {
             --primary: #ff4757;
+            --secondary: #00ffcc; /* Accent for Bedrock Info */
             --background: #0f0f0f;
             --surface: #1a1a1a;
             --text: #ffffff;
@@ -88,15 +89,15 @@
             justify-content: center;
             align-items: center;
             text-align: center;
-            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), 
+            background: linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.8)), 
                         url('https://images.unsplash.com/photo-1627398242454-45a1465c2479?auto=format&fit=crop&q=80&w=1920');
             background-size: cover;
             background-position: center;
-            padding: 0 20px;
+            padding: 100px 20px 40px 20px;
         }
 
         .hero h1 {
-            font-size: 5rem;
+            font-size: clamp(3rem, 10vw, 5rem);
             font-weight: 900;
             margin-bottom: 10px;
             text-shadow: 0 10px 30px rgba(0,0,0,0.5);
@@ -106,35 +107,82 @@
             font-size: 1.2rem;
             color: var(--text-dim);
             max-width: 600px;
-            margin-bottom: 30px;
+            margin-bottom: 40px;
+        }
+
+        /* IP Container */
+        .join-options {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+            width: 100%;
+            max-width: 900px;
         }
 
         .ip-box {
             background: var(--surface);
-            padding: 15px 30px;
-            border-radius: 12px;
-            border: 1px solid #444;
+            padding: 20px 30px;
+            border-radius: 16px;
+            border: 1px solid #333;
             cursor: pointer;
-            transition: 0.3s;
-            display: flex;
-            align-items: center;
-            gap: 15px;
+            transition: 0.3s ease;
+            text-align: left;
+            min-width: 280px;
+            position: relative;
         }
 
         .ip-box:hover {
             transform: translateY(-5px);
             border-color: var(--primary);
-            box-shadow: 0 10px 20px rgba(255, 71, 87, 0.2);
+            box-shadow: 0 10px 30px rgba(255, 71, 87, 0.15);
+        }
+
+        .ip-box.bedrock:hover {
+            border-color: var(--secondary);
+            box-shadow: 0 10px 30px rgba(0, 255, 204, 0.15);
+        }
+
+        .platform-label {
+            display: block;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-dim);
+            margin-bottom: 8px;
         }
 
         .ip-text {
-            font-weight: 700;
+            display: block;
+            font-size: 1.4rem;
+            font-weight: 900;
             color: var(--primary);
+        }
+
+        .bedrock .ip-text {
+            color: var(--secondary);
+        }
+
+        .port-text {
+            display: block;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-top: 5px;
+            color: #888;
+        }
+
+        .copy-hint {
+            margin-top: 20px;
+            font-size: 0.8rem;
+            opacity: 0.4;
+            letter-spacing: 1px;
         }
 
         @media (max-width: 768px) {
             .hero h1 { font-size: 3rem; }
             .nav-links { display: none; }
+            .join-options { flex-direction: column; align-items: center; }
         }
     </style>
 </head>
@@ -151,27 +199,41 @@
 
     <section class="hero">
         <h1>DONNER<span>SMP</span></h1>
-        <p>The ultimate survival experience. Join a community of builders, explorers, and warriors.</p>
+        <p>The ultimate survival experience for NZ & Australian players. Now with full cross-play support.</p>
         
-        <div class="ip-box" onclick="copyIP()">
-            <span>Server IP:</span>
-            <span class="ip-text" id="serverIP">play.donnersmp.net</span>
+        <div class="join-options">
+            <div class="ip-box" onclick="copyText('donnersmp.net', this)">
+                <span class="platform-label">Minecraft Java</span>
+                <span class="ip-text">donnersmp.net</span>
+                <span class="port-text">Port: Default</span>
+            </div>
+
+            <div class="ip-box bedrock" onclick="copyText('28672', this)">
+                <span class="platform-label">Minecraft Bedrock</span>
+                <span class="ip-text">donnersmp.net</span>
+                <span class="port-text">Port: <span style="color:white">28672</span></span>
+            </div>
         </div>
-        <p style="margin-top: 15px; font-size: 0.8rem; opacity: 0.6;">Click the IP to copy</p>
+
+        <p class="copy-hint">CLICK EITHER BOX TO COPY INFO</p>
     </section>
 
     <script>
-        function copyIP() {
-            const ip = document.getElementById('serverIP').innerText;
-            navigator.clipboard.writeText(ip);
+        function copyText(text, element) {
+            navigator.clipboard.writeText(text);
             
-            // Visual feedback
-            const box = document.querySelector('.ip-box');
-            const originalText = box.innerHTML;
-            box.innerHTML = '<span style="color: #2ed573;">IP Copied!</span>';
+            // Visual feedback based on which one was clicked
+            const originalContent = element.innerHTML;
+            const isBedrock = element.classList.contains('bedrock');
+            const feedbackColor = isBedrock ? '#00ffcc' : '#ff4757';
+            
+            element.innerHTML = `<div style="height: 100%; display: flex; align-items: center; justify-content: center;">
+                                    <span style="color: ${feedbackColor}; font-weight: 900; font-size: 1.2rem;">COPIED!</span>
+                                 </div>`;
+            
             setTimeout(() => {
-                box.innerHTML = originalText;
-            }, 2000);
+                element.innerHTML = originalContent;
+            }, 1500);
         }
     </script>
 
