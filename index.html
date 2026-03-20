@@ -26,6 +26,9 @@
             color: var(--text);
             line-height: 1.6;
             overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
         }
 
         /* Navigation */
@@ -79,7 +82,7 @@
 
         /* Hero Section */
         .hero {
-            height: 100vh;
+            flex: 1;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -121,6 +124,7 @@
         .ip-box:hover {
             transform: translateY(-5px);
             border-color: var(--primary);
+            box-shadow: 0 10px 20px rgba(255, 71, 87, 0.2);
         }
 
         .ip-text {
@@ -128,16 +132,9 @@
             color: var(--primary);
         }
 
-        footer {
-            text-align: center;
-            padding: 40px;
-            color: var(--text-dim);
-            font-size: 0.8rem;
-        }
-
         @media (max-width: 768px) {
             .hero h1 { font-size: 3rem; }
-            .nav-links { display: none; } /* Simplified for single-file example */
+            .nav-links { display: none; }
         }
     </style>
 </head>
@@ -160,18 +157,21 @@
             <span>Server IP:</span>
             <span class="ip-text" id="serverIP">play.donnersmp.net</span>
         </div>
-        <p style="margin-top: 15px; font-size: 0.8rem;">Click the IP to copy</p>
+        <p style="margin-top: 15px; font-size: 0.8rem; opacity: 0.6;">Click the IP to copy</p>
     </section>
-
-    <footer>
-        &copy; 2026 DonnerSMP. Not an official Minecraft product. Not approved by or associated with Mojang or Microsoft.
-    </footer>
 
     <script>
         function copyIP() {
             const ip = document.getElementById('serverIP').innerText;
             navigator.clipboard.writeText(ip);
-            alert("IP Copied to clipboard! See you online.");
+            
+            // Visual feedback
+            const box = document.querySelector('.ip-box');
+            const originalText = box.innerHTML;
+            box.innerHTML = '<span style="color: #2ed573;">IP Copied!</span>';
+            setTimeout(() => {
+                box.innerHTML = originalText;
+            }, 2000);
         }
     </script>
 
