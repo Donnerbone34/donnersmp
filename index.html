@@ -118,7 +118,8 @@
             padding: 80px 10%;
             background: #0a0a0a;
             display: flex;
-            justify-content: center;
+            flex-direction: column;
+            align-items: center;
         }
 
         .status-card {
@@ -127,8 +128,9 @@
             border-radius: 24px;
             border: 1px solid #333;
             width: 100%;
-            max-width: 600px;
+            max-width: 700px;
             text-align: center;
+            margin-bottom: 40px;
         }
 
         .pulse-large {
@@ -161,7 +163,7 @@
 
         .stat-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 20px;
             margin-top: 30px;
         }
@@ -173,7 +175,26 @@
         }
 
         .stat-label { font-size: 0.7rem; color: var(--text-dim); text-transform: uppercase; }
-        .stat-value { font-size: 1.2rem; font-weight: 700; color: white; }
+        .stat-value { font-size: 1.1rem; font-weight: 700; color: white; }
+
+        /* Player List Styles */
+        #player-list-container {
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 1px solid #333;
+            text-align: left;
+        }
+
+        .player-chip {
+            display: inline-block;
+            background: var(--primary);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            margin: 4px;
+        }
 
         /* Join Cards */
         .join-options { display: flex; gap: 20px; flex-wrap: wrap; justify-content: center; }
@@ -188,6 +209,15 @@
             min-width: 280px;
         }
         .ip-box:hover { transform: translateY(-5px); border-color: var(--primary); }
+
+        .bedrock-guide {
+            max-width: 700px;
+            background: rgba(255, 71, 87, 0.05);
+            border: 1px solid rgba(255, 71, 87, 0.2);
+            padding: 25px;
+            border-radius: 16px;
+            margin-top: 20px;
+        }
 
         @media (max-width: 768px) {
             .nav-links { display: none; }
@@ -244,28 +274,36 @@
                     <div id="stat-version" class="stat-value">Loading...</div>
                 </div>
                 <div class="stat-item">
-                    <div class="stat-label">Connection IP</div>
-                    <div class="stat-value" style="font-size: 0.9rem;">donnersmp.net</div>
-                </div>
-                <div class="stat-item">
                     <div class="stat-label">Last Checked</div>
-                    <div id="stat-time" class="stat-value" style="font-size: 0.9rem;">Just now</div>
+                    <div id="stat-time" class="stat-value">Just now</div>
                 </div>
             </div>
+
+            <div id="player-list-container">
+                <div class="stat-label" style="margin-bottom: 10px;">Who's Playing</div>
+                <div id="player-list">
+                    <p style="color: #555; font-size: 0.9rem;">Checking for online players...</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="bedrock-guide">
+            <h3 style="color: var(--primary); margin-bottom: 10px;">Bedrock Connection Guide</h3>
+            <p style="font-size: 0.9rem; color: var(--text-dim);">If you are on Bedrock (Mobile/Console/Windows), you <b>must</b> change the port from 19132 to <b style="color: white;">28672</b> in your server settings or you will not be able to connect.</p>
         </div>
     </section>
 
     <script>
-        // Update Server Status from API
         async function fetchStatus() {
             const pulse = document.getElementById('big-pulse');
             const title = document.getElementById('main-status-title');
             const players = document.getElementById('stat-players');
             const version = document.getElementById('stat-version');
             const time = document.getElementById('stat-time');
+            const pList = document.getElementById('player-list');
 
             try {
-                // Pinging the Direct IP and Port
+                // Fetching from the Direct IP:Port
                 const res = await fetch('https://api.mcstatus.io/v2/status/java/168.119.78.155:28672');
                 const data = await res.json();
 
@@ -274,24 +312,35 @@
                     title.innerText = "SERVER ONLINE";
                     title.style.color = "var(--status-green)";
                     players.innerText = `${data.players.online} / ${data.players.max}`;
-                    version.innerText = data.version.name_clean || "1.20.x";
+                    version.innerText = data.version.name_clean || "1.21.x";
+                    
+                    // Update Player List
+                    if (data.players.list && data.players.list.length > 0) {
+                        pList.innerHTML = data.players.list.map(p => 
+                            `<span class="player-chip">${p.name_clean}</span>`
+                        ).join('');
+                    } else {
+                        pList.innerHTML = "<p style='color:#555; font-size:0.9rem;'>No one is online. Be the first to join!</p>";
+                    }
                 } else {
                     pulse.classList.add('offline');
                     title.innerText = "SERVER OFFLINE";
                     title.style.color = "var(--status-red)";
                     players.innerText = "0 / 0";
                     version.innerText = "Offline";
+                    pList.innerHTML = "";
                 }
                 const now = new Date();
                 time.innerText = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
             } catch (err) {
-                title.innerText = "ERROR CHECKING";
+                title.innerText = "API ERROR";
+                console.error(err);
             }
         }
 
-        // Initial Fetch
+        // Run on load
         fetchStatus();
-        // Set Interval to 5 Minutes (300,000 ms)
+        // Set Interval to 5 Minutes
         setInterval(fetchStatus, 300000);
 
         function copyText(text, element) {
