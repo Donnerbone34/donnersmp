@@ -25,6 +25,7 @@
             padding: 0;
             box-sizing: border-box;
             font-family: 'Inter', sans-serif;
+            scroll-behavior: smooth;
         }
 
         body {
@@ -32,9 +33,6 @@
             color: var(--text);
             line-height: 1.6;
             overflow-x: hidden;
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
         }
 
         /* Navigation */
@@ -64,17 +62,11 @@
             transition: 0.3s;
         }
 
-        .logo-link:hover {
-            transform: scale(1.05);
-        }
-
         .nav-logo-img {
             height: 45px;
             width: auto;
-            display: block;
         }
 
-        /* Social Icons */
         .social-links {
             display: flex;
             gap: 15px;
@@ -84,48 +76,28 @@
         }
 
         .social-icon {
-            height: 24px;
-            width: auto;
-            transition: 0.3s;
+            height: 22px;
             opacity: 0.7;
+            transition: 0.3s;
         }
 
-        .social-icon:hover {
-            opacity: 1;
-            transform: translateY(-2px);
-        }
+        .social-icon:hover { opacity: 1; transform: translateY(-2px); }
 
-        .nav-links {
-            display: flex;
-            gap: 30px;
-        }
-
+        .nav-links { display: flex; gap: 30px; }
         .nav-links a {
             text-decoration: none;
             color: var(--text);
             font-weight: 600;
             font-size: 0.9rem;
-            transition: 0.3s;
             text-transform: uppercase;
+            transition: 0.3s;
         }
 
-        .nav-links a:hover {
-            color: var(--primary);
-        }
-
-        .coming-soon {
-            font-size: 0.7rem;
-            background: #333;
-            padding: 2px 6px;
-            border-radius: 4px;
-            margin-left: 5px;
-            vertical-align: middle;
-            color: var(--text-dim);
-        }
+        .nav-links a:hover { color: var(--primary); }
 
         /* Hero Section */
         .hero {
-            flex: 1;
+            height: 100vh;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -135,143 +107,91 @@
                         url('https://images.unsplash.com/photo-1627398242454-45a1465c2479?auto=format&fit=crop&q=80&w=1920');
             background-size: cover;
             background-position: center;
-            padding: 120px 20px 40px 20px;
+            padding: 20px;
         }
 
-        /* PULSE STATUS SYSTEM */
-        .status-wrapper {
+        .hero h1 { font-size: clamp(3rem, 10vw, 5rem); font-weight: 900; margin-bottom: 10px; }
+        .hero p { font-size: 1.2rem; color: var(--text-dim); max-width: 600px; margin-bottom: 40px; }
+
+        /* Status Section */
+        .status-section {
+            padding: 80px 10%;
+            background: #0a0a0a;
             display: flex;
-            align-items: center;
-            gap: 10px;
-            background: rgba(0,0,0,0.4);
-            padding: 8px 16px;
-            border-radius: 100px;
-            margin-bottom: 20px;
+            justify-content: center;
+        }
+
+        .status-card {
+            background: var(--surface);
+            padding: 40px;
+            border-radius: 24px;
             border: 1px solid #333;
+            width: 100%;
+            max-width: 600px;
+            text-align: center;
         }
 
-        .pulse-dot {
-            width: 10px;
-            height: 10px;
+        .pulse-large {
+            width: 20px;
+            height: 20px;
             border-radius: 50%;
+            margin: 0 auto 20px;
             background: var(--status-green);
-            box-shadow: 0 0 0 rgba(46, 213, 115, 0.4);
-            animation: pulse-green 2s infinite;
+            box-shadow: 0 0 20px var(--status-green);
+            animation: pulse-ring 2s infinite;
         }
 
-        .pulse-dot.offline {
+        .pulse-large.offline {
             background: var(--status-red);
-            animation: pulse-red 2s infinite;
+            box-shadow: 0 0 20px var(--status-red);
+            animation: pulse-ring-red 2s infinite;
         }
 
-        @keyframes pulse-green {
+        @keyframes pulse-ring {
             0% { box-shadow: 0 0 0 0 rgba(46, 213, 115, 0.7); }
-            70% { box-shadow: 0 0 0 10px rgba(46, 213, 115, 0); }
+            70% { box-shadow: 0 0 0 15px rgba(46, 213, 115, 0); }
             100% { box-shadow: 0 0 0 0 rgba(46, 213, 115, 0); }
         }
 
-        @keyframes pulse-red {
+        @keyframes pulse-ring-red {
             0% { box-shadow: 0 0 0 0 rgba(255, 71, 87, 0.7); }
-            70% { box-shadow: 0 0 0 10px rgba(255, 71, 87, 0); }
+            70% { box-shadow: 0 0 0 15px rgba(255, 71, 87, 0); }
             100% { box-shadow: 0 0 0 0 rgba(255, 71, 87, 0); }
         }
 
-        #status-text {
-            font-size: 0.8rem;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            color: var(--status-green);
-        }
-
-        #status-text.offline { color: var(--status-red); }
-
-        .hero h1 {
-            font-size: clamp(3rem, 10vw, 5rem);
-            font-weight: 900;
-            margin-bottom: 10px;
-            text-shadow: 0 10px 30px rgba(0,0,0,0.5);
-        }
-
-        .hero p {
-            font-size: 1.2rem;
-            color: var(--text-dim);
-            max-width: 600px;
-            margin-bottom: 40px;
-        }
-
-        .join-options {
-            display: flex;
+        .stat-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
             gap: 20px;
-            flex-wrap: wrap;
-            justify-content: center;
-            width: 100%;
-            max-width: 900px;
+            margin-top: 30px;
         }
 
+        .stat-item {
+            background: rgba(255,255,255,0.05);
+            padding: 15px;
+            border-radius: 12px;
+        }
+
+        .stat-label { font-size: 0.7rem; color: var(--text-dim); text-transform: uppercase; }
+        .stat-value { font-size: 1.2rem; font-weight: 700; color: white; }
+
+        /* Join Cards */
+        .join-options { display: flex; gap: 20px; flex-wrap: wrap; justify-content: center; }
         .ip-box {
             background: var(--surface);
             padding: 20px 30px;
             border-radius: 16px;
             border: 1px solid #333;
             cursor: pointer;
-            transition: 0.3s ease;
+            transition: 0.3s;
             text-align: left;
             min-width: 280px;
         }
-
-        .ip-box:hover {
-            transform: translateY(-5px);
-            border-color: var(--primary);
-            box-shadow: 0 10px 30px rgba(255, 71, 87, 0.15);
-        }
-
-        .ip-box.bedrock:hover {
-            border-color: var(--secondary);
-            box-shadow: 0 10px 30px rgba(0, 255, 204, 0.15);
-        }
-
-        .platform-label {
-            display: block;
-            font-size: 0.75rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            color: var(--text-dim);
-            margin-bottom: 8px;
-        }
-
-        .ip-text {
-            display: block;
-            font-size: 1.4rem;
-            font-weight: 900;
-            color: var(--primary);
-        }
-
-        .bedrock .ip-text {
-            color: var(--secondary);
-        }
-
-        .port-text {
-            display: block;
-            font-size: 0.9rem;
-            font-weight: 600;
-            margin-top: 5px;
-            color: #888;
-        }
-
-        .copy-hint {
-            margin-top: 20px;
-            font-size: 0.8rem;
-            opacity: 0.4;
-            letter-spacing: 1px;
-        }
+        .ip-box:hover { transform: translateY(-5px); border-color: var(--primary); }
 
         @media (max-width: 768px) {
-            .hero h1 { font-size: 3rem; }
             .nav-links { display: none; }
-            .join-options { flex-direction: column; align-items: center; }
-            .social-links { border-left: none; padding-left: 10px; }
+            .stat-grid { grid-template-columns: 1fr; }
         }
     </style>
 </head>
@@ -279,98 +199,107 @@
 
     <nav>
         <div class="brand-section">
-            <a href="/" class="logo-link">
-                <img src="logo.png" alt="DonnerSMP Logo" class="nav-logo-img">
-            </a>
-
+            <a href="/" class="logo-link"><img src="logo.png" alt="Logo" class="nav-logo-img"></a>
             <div class="social-links">
-                <a href="https://www.youtube.com/@donnerbone" target="_blank">
-                    <img src="youtube.png" alt="YouTube" class="social-icon">
-                </a>
-                <a href="https://discord.gg/bJ3BghxF" target="_blank">
-                    <img src="discord.png" alt="Discord" class="social-icon">
-                </a>
+                <a href="https://www.youtube.com/@donnerbone" target="_blank"><img src="youtube.png" class="social-icon"></a>
+                <a href="https://discord.gg/bJ3BghxF" target="_blank"><img src="discord.png" class="social-icon"></a>
             </div>
         </div>
-
         <div class="nav-links">
             <a href="#">Home</a>
-            <a href="#">Shop <span class="coming-soon">SOON</span></a>
-            <a href="#">Stats <span class="coming-soon">SOON</span></a>
+            <a href="#status-check">Server Status</a>
+            <a href="#">Shop <span style="font-size: 0.6rem; opacity: 0.5;">SOON</span></a>
         </div>
     </nav>
 
     <section class="hero">
-        <div class="status-wrapper">
-            <div id="status-dot" class="pulse-dot"></div>
-            <div id="status-text">Checking Status...</div>
-        </div>
-
         <h1>DONNER<span>SMP</span></h1>
         <p>The ultimate survival experience for NZ & Australian players. Now with full cross-play support.</p>
         
         <div class="join-options">
             <div class="ip-box" onclick="copyText('donnersmp.net', this)">
-                <span class="platform-label">Minecraft Java</span>
-                <span class="ip-text">donnersmp.net</span>
-                <span class="port-text">Port: Default</span>
+                <span style="font-size: 0.7rem; color: var(--text-dim);">JAVA</span><br>
+                <span style="font-size: 1.4rem; font-weight: 900; color: var(--primary);">donnersmp.net</span>
             </div>
-
-            <div class="ip-box bedrock" onclick="copyText('28672', this)">
-                <span class="platform-label">Minecraft Bedrock</span>
-                <span class="ip-text">donnersmp.net</span>
-                <span class="port-text">Port: <span style="color:white">28672</span></span>
+            <div class="ip-box" onclick="copyText('28672', this)">
+                <span style="font-size: 0.7rem; color: var(--text-dim);">BEDROCK PORT</span><br>
+                <span style="font-size: 1.4rem; font-weight: 900; color: var(--secondary);">28672</span>
             </div>
         </div>
+    </section>
 
-        <p class="copy-hint">CLICK EITHER BOX TO COPY INFO</p>
+    <section id="status-check" class="status-section">
+        <div class="status-card">
+            <div id="big-pulse" class="pulse-large"></div>
+            <h2 id="main-status-title" style="font-size: 2rem; margin-bottom: 5px;">Checking Server...</h2>
+            <p style="color: var(--text-dim); font-size: 0.9rem;">Refreshes every 5 minutes</p>
+
+            <div class="stat-grid">
+                <div class="stat-item">
+                    <div class="stat-label">Players Online</div>
+                    <div id="stat-players" class="stat-value">0 / 0</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-label">Server Version</div>
+                    <div id="stat-version" class="stat-value">Loading...</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-label">Connection IP</div>
+                    <div class="stat-value" style="font-size: 0.9rem;">donnersmp.net</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-label">Last Checked</div>
+                    <div id="stat-time" class="stat-value" style="font-size: 0.9rem;">Just now</div>
+                </div>
+            </div>
+        </div>
     </section>
 
     <script>
-        // STATUS API CHECK
-        async function updateStatus() {
-            const dot = document.getElementById('status-dot');
-            const text = document.getElementById('status-text');
-            
+        // Update Server Status from API
+        async function fetchStatus() {
+            const pulse = document.getElementById('big-pulse');
+            const title = document.getElementById('main-status-title');
+            const players = document.getElementById('stat-players');
+            const version = document.getElementById('stat-version');
+            const time = document.getElementById('stat-time');
+
             try {
-                // Using mcapi.us (free Minecraft status API)
-                const response = await fetch('https://mcapi.us/server/status?ip=donnersmp.net');
-                const data = await response.json();
-                
+                // Pinging the Direct IP and Port
+                const res = await fetch('https://api.mcstatus.io/v2/status/java/168.119.78.155:28672');
+                const data = await res.json();
+
                 if (data.online) {
-                    dot.classList.remove('offline');
-                    text.classList.remove('offline');
-                    text.innerText = `Online: ${data.players.now} Players`;
+                    pulse.classList.remove('offline');
+                    title.innerText = "SERVER ONLINE";
+                    title.style.color = "var(--status-green)";
+                    players.innerText = `${data.players.online} / ${data.players.max}`;
+                    version.innerText = data.version.name_clean || "1.20.x";
                 } else {
-                    dot.classList.add('offline');
-                    text.classList.add('offline');
-                    text.innerText = "Server Offline";
+                    pulse.classList.add('offline');
+                    title.innerText = "SERVER OFFLINE";
+                    title.style.color = "var(--status-red)";
+                    players.innerText = "0 / 0";
+                    version.innerText = "Offline";
                 }
-            } catch (error) {
-                text.innerText = "Status Unavailable";
+                const now = new Date();
+                time.innerText = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            } catch (err) {
+                title.innerText = "ERROR CHECKING";
             }
         }
 
-        // Run status check on load
-        updateStatus();
-        // Refresh every 60 seconds
-        setInterval(updateStatus, 60000);
+        // Initial Fetch
+        fetchStatus();
+        // Set Interval to 5 Minutes (300,000 ms)
+        setInterval(fetchStatus, 300000);
 
         function copyText(text, element) {
             navigator.clipboard.writeText(text);
-            const originalContent = element.innerHTML;
-            const isBedrock = element.classList.contains('bedrock');
-            const feedbackColor = isBedrock ? '#00ffcc' : '#ff4757';
-            
-            element.innerHTML = `<div style="height: 100%; display: flex; align-items: center; justify-content: center;">
-                                    <span style="color: ${feedbackColor}; font-weight: 900; font-size: 1.2rem;">COPIED!</span>
-                                 </div>`;
-            
-            setTimeout(() => {
-                element.innerHTML = originalContent;
-            }, 1500);
+            const old = element.innerHTML;
+            element.innerHTML = "<center><span style='color:white; font-weight:900;'>COPIED!</span></center>";
+            setTimeout(() => { element.innerHTML = old; }, 1500);
         }
     </script>
-
 </body>
 </html>
