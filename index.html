@@ -14,8 +14,6 @@
     <meta property="og:image" content="logo.png">
     <meta property="og:type" content="website">
     
-    <meta name="google-site-verification" content="PASTE_YOUR_CODE_HERE" />
-    
     <link rel="icon" type="image/png" href="logo.png">
     <link rel="apple-touch-icon" href="logo.png">
     
@@ -30,6 +28,7 @@
             --text-dim: #a0a0a0;
             --status-green: #2ed573;
             --status-red: #ff4757;
+            --status-yellow: #feca57; /* Added Yellow for searching */
         }
 
         * {
@@ -145,14 +144,22 @@
             margin-bottom: 40px;
         }
 
+        /* Pulse Animations */
         .pulse-large {
             width: 20px;
             height: 20px;
             border-radius: 50%;
             margin: 0 auto 20px;
+            /* Default is Yellow (Searching) */
+            background: var(--status-yellow);
+            box-shadow: 0 0 20px var(--status-yellow);
+            animation: pulse-ring-yellow 2s infinite;
+        }
+
+        .pulse-large.online {
             background: var(--status-green);
             box-shadow: 0 0 20px var(--status-green);
-            animation: pulse-ring 2s infinite;
+            animation: pulse-ring-green 2s infinite;
         }
 
         .pulse-large.offline {
@@ -161,7 +168,13 @@
             animation: pulse-ring-red 2s infinite;
         }
 
-        @keyframes pulse-ring {
+        @keyframes pulse-ring-yellow {
+            0% { box-shadow: 0 0 0 0 rgba(254, 202, 87, 0.7); }
+            70% { box-shadow: 0 0 0 15px rgba(254, 202, 87, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(254, 202, 87, 0); }
+        }
+
+        @keyframes pulse-ring-green {
             0% { box-shadow: 0 0 0 0 rgba(46, 213, 115, 0.7); }
             70% { box-shadow: 0 0 0 15px rgba(46, 213, 115, 0); }
             100% { box-shadow: 0 0 0 0 rgba(46, 213, 115, 0); }
@@ -273,7 +286,7 @@
     <section id="status-check" class="status-section">
         <div class="status-card">
             <div id="big-pulse" class="pulse-large"></div>
-            <h2 id="main-status-title" style="font-size: 2rem; margin-bottom: 5px;">Checking Server...</h2>
+            <h2 id="main-status-title" style="font-size: 2rem; margin-bottom: 5px; color: var(--status-yellow);">Checking Server...</h2>
             <p style="color: var(--text-dim); font-size: 0.9rem;">Refreshes every 5 minutes</p>
 
             <div class="stat-grid">
@@ -314,13 +327,19 @@
             const time = document.getElementById('stat-time');
             const pList = document.getElementById('player-list');
 
+            // Set to "Searching" state (Yellow) before fetching
+            pulse.className = 'pulse-large';
+            title.innerText = "Checking Server...";
+            title.style.color = "var(--status-yellow)";
+
             try {
-                // Fetching from the Direct IP:Port
-                const res = await fetch('https://api.mcstatus.io/v2/status/java/play.donnersmp.net:28672');
+                // Fetching from the standard domain without the bedrock port
+                const res = await fetch('https://api.mcstatus.io/v2/status/java/play.donnersmp.net');
                 const data = await res.json();
 
                 if (data.online) {
-                    pulse.classList.remove('offline');
+                    // Server is Online (Green)
+                    pulse.className = 'pulse-large online';
                     title.innerText = "SERVER ONLINE";
                     title.style.color = "var(--status-green)";
                     players.innerText = `${data.players.online} / ${data.players.max}`;
@@ -335,7 +354,8 @@
                         pList.innerHTML = "<p style='color:#555; font-size:0.9rem;'>No one is online. Be the first to join!</p>";
                     }
                 } else {
-                    pulse.classList.add('offline');
+                    // Server is Offline (Red)
+                    pulse.className = 'pulse-large offline';
                     title.innerText = "SERVER OFFLINE";
                     title.style.color = "var(--status-red)";
                     players.innerText = "0 / 0";
@@ -345,7 +365,10 @@
                 const now = new Date();
                 time.innerText = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
             } catch (err) {
+                // API Error (Red)
+                pulse.className = 'pulse-large offline';
                 title.innerText = "API ERROR";
+                title.style.color = "var(--status-red)";
                 console.error(err);
             }
         }
