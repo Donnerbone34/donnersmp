@@ -28,7 +28,7 @@
             --text-dim: #a0a0a0;
             --status-green: #2ed573;
             --status-red: #ff4757;
-            --status-yellow: #feca57; /* Yellow for searching */
+            --status-yellow: #feca57;
         }
 
         * {
@@ -150,7 +150,6 @@
             height: 20px;
             border-radius: 50%;
             margin: 0 auto 20px;
-            /* Default is Yellow (Searching) */
             background: var(--status-yellow);
             box-shadow: 0 0 20px var(--status-yellow);
             animation: pulse-ring-yellow 2s infinite;
@@ -327,29 +326,25 @@
             const time = document.getElementById('stat-time');
             const pList = document.getElementById('player-list');
 
-            // Set to "Searching" state (Yellow) before fetching
             pulse.className = 'pulse-large';
             title.innerText = "Checking Server...";
             title.style.color = "var(--status-yellow)";
 
             try {
-                // Fetching from the standard domain without the bedrock port
                 const res = await fetch('https://api.mcstatus.io/v2/status/java/play.donnersmp.net');
                 const data = await res.json();
 
-                // SMARTER CHECK: Make sure it's actually online and not a sleeping proxy
                 const isProxyFakeOnline = data.version && data.version.name_clean === "Offline";
                 const isReallyOnline = data.online && !isProxyFakeOnline && data.players.max > 0;
 
                 if (isReallyOnline) {
-                    // Server is TRULY Online (Green)
+                    // SERVER IS ONLINE
                     pulse.className = 'pulse-large online';
                     title.innerText = "SERVER ONLINE";
                     title.style.color = "var(--status-green)";
                     players.innerText = `${data.players.online} / ${data.players.max}`;
                     version.innerText = data.version.name_clean || "1.21.x";
                     
-                    // Filter out fake proxy messages in the player list just in case
                     const realPlayers = data.players.list ? data.players.list.filter(p => !p.name_clean.toLowerCase().includes('offline')) : [];
                     
                     if (realPlayers.length > 0) {
@@ -360,18 +355,26 @@
                         pList.innerHTML = "<p style='color:#555; font-size:0.9rem;'>No one is online. Be the first to join!</p>";
                     }
                 } else {
-                    // Server is Offline or Asleep (Red)
+                    // SERVER IS OFFLINE / ASLEEP
                     pulse.className = 'pulse-large offline';
                     title.innerText = "SERVER OFFLINE";
                     title.style.color = "var(--status-red)";
                     players.innerText = "0 / 0";
                     version.innerText = "Offline";
-                    pList.innerHTML = "";
+                    
+                    // The new FalixNodes Wake-Up Message
+                    pList.innerHTML = `
+                        <span class="player-chip" style="background: var(--status-red);">Server is offline</span>
+                        <p style="color: var(--text-dim); font-size: 0.95rem; margin-top: 10px;">
+                            The server went to sleep! Wake it up at: <br>
+                            <a href="https://falixnodes.net/startserver" target="_blank" style="color: var(--secondary); font-weight: bold; text-decoration: none; font-size: 1.1rem; display: inline-block; margin-top: 5px;">FalixNodes.net</a>
+                        </p>
+                    `;
                 }
                 const now = new Date();
                 time.innerText = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
             } catch (err) {
-                // API Error (Red)
+                // API ERROR
                 pulse.className = 'pulse-large offline';
                 title.innerText = "API ERROR";
                 title.style.color = "var(--status-red)";
@@ -379,10 +382,7 @@
             }
         }
 
-        // Run on load
         fetchStatus();
-        
-        // Set Interval to 5 Minutes
         setInterval(fetchStatus, 300000);
 
         function copyText(text, element) {
