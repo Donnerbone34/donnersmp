@@ -28,7 +28,7 @@
             --text-dim: #a0a0a0;
             --status-green: #2ed573;
             --status-red: #ff4757;
-            --status-yellow: #feca57; /* Added Yellow for searching */
+            --status-yellow: #feca57; /* Yellow for searching */
         }
 
         * {
@@ -337,24 +337,30 @@
                 const res = await fetch('https://api.mcstatus.io/v2/status/java/play.donnersmp.net');
                 const data = await res.json();
 
-                if (data.online) {
-                    // Server is Online (Green)
+                // SMARTER CHECK: Make sure it's actually online and not a sleeping proxy
+                const isProxyFakeOnline = data.version && data.version.name_clean === "Offline";
+                const isReallyOnline = data.online && !isProxyFakeOnline && data.players.max > 0;
+
+                if (isReallyOnline) {
+                    // Server is TRULY Online (Green)
                     pulse.className = 'pulse-large online';
                     title.innerText = "SERVER ONLINE";
                     title.style.color = "var(--status-green)";
                     players.innerText = `${data.players.online} / ${data.players.max}`;
                     version.innerText = data.version.name_clean || "1.21.x";
                     
-                    // Update Player List
-                    if (data.players.list && data.players.list.length > 0) {
-                        pList.innerHTML = data.players.list.map(p => 
+                    // Filter out fake proxy messages in the player list just in case
+                    const realPlayers = data.players.list ? data.players.list.filter(p => !p.name_clean.toLowerCase().includes('offline')) : [];
+                    
+                    if (realPlayers.length > 0) {
+                        pList.innerHTML = realPlayers.map(p => 
                             `<span class="player-chip">${p.name_clean}</span>`
                         ).join('');
                     } else {
                         pList.innerHTML = "<p style='color:#555; font-size:0.9rem;'>No one is online. Be the first to join!</p>";
                     }
                 } else {
-                    // Server is Offline (Red)
+                    // Server is Offline or Asleep (Red)
                     pulse.className = 'pulse-large offline';
                     title.innerText = "SERVER OFFLINE";
                     title.style.color = "var(--status-red)";
