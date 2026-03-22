@@ -8,8 +8,16 @@
     <meta name="description" content="Join DonnerSMP! A 1.21.11 Java and Bedrock crossplay survival Minecraft server.">
     <meta name="keywords" content="Minecraft, DonnerSMP, Java, Bedrock, SMP, 1.21.11, Minecraft Server">
     <meta name="robots" content="index, follow">
+
+    <meta property="og:title" content="DonnerSMP | Official Server">
+    <meta property="og:description" content="Join DonnerSMP! A 1.21.11 Java and Bedrock crossplay survival Minecraft server.">
+    <meta property="og:image" content="logo.png">
+    <meta property="og:type" content="website">
+    
+    <meta name="google-site-verification" content="PASTE_YOUR_CODE_HERE" />
     
     <link rel="icon" type="image/png" href="logo.png">
+    <link rel="apple-touch-icon" href="logo.png">
     
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
@@ -308,7 +316,7 @@
 
             try {
                 // Fetching from the Direct IP:Port
-                const res = await fetch('https://api.mcstatus.io/v2/status/java/168.119.78.155:28672');
+                const res = await fetch('https://api.mcstatus.io/v2/status/java/play.donnersmp.net:28672');
                 const data = await res.json();
 
                 if (data.online) {
@@ -344,4 +352,16 @@
 
         // Run on load
         fetchStatus();
-        // Set Interval
+        
+        // Set Interval to 5 Minutes
+        setInterval(fetchStatus, 300000);
+
+        function copyText(text, element) {
+            navigator.clipboard.writeText(text);
+            const old = element.innerHTML;
+            element.innerHTML = "<center><span style='color:white; font-weight:900;'>COPIED!</span></center>";
+            setTimeout(() => { element.innerHTML = old; }, 1500);
+        }
+    </script>
+</body>
+</html>
